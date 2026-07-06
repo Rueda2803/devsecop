@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  webapp:
+    build: .
+    image: mi-app-flask:latest
+    ports:
+      - "8080:5000" # Mapea el puerto 8080 local al 5000 del contenedor
+    volumes:
+      - ./app:/app # Permite ver cambios de código en tiempo real (desarrollo)
+    environment:
+      - FLASK_ENV=development
