@@ -15,21 +15,21 @@ jobs:
     name: "Semgrep SAST Scan"
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4 # Lo actualizamos a v4 para quitar el warning de Node.js
 
-    # Ejecutamos Semgrep usando una acción oficial.
-    # Usaremos las reglas por defecto (p/security-audit) que buscan secretos.
+    # Ejecutamos Semgrep de forma limpia
     - name: Run Semgrep
       uses: returntocorp/semgrep-action@v1
       with:
         config: p/security-audit
-        # Le decimos a Semgrep que ANALICE pero no bloquee (para ver el resultado primero).
-        # En producción, usarías 'fail-on: always' para bloquear.
-        auditOn: true
+    # TRUCO DE ENTREVISTA: Si quieres que Semgrep reporte los fallos 
+    # pero NO detenga el pipeline para que Trivy pueda correr,
+    # agregamos esta propiedad nativa de GitHub Actions:
+    #      continue-on-error: true
 
-  # ------------------------------------------------------------
-  # JOB 2: Escaneo de Imagen y Contenedores (SCA/IaC) - Trivy
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
+    # JOB 2: Escaneo de Imagen y Contenedores (SCA/IaC) - Trivy
+    # ------------------------------------------------------------
   trivy-security:
     needs: semgrep-security # Este job solo corre si el anterior termina
     runs-on: ubuntu-latest
